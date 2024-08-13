@@ -18,7 +18,7 @@ const getUsersById = (req, res) => {
 };
 
 const addUsers = (req, res) => {
-    const { email, username, password, tipe, created_at, updated_at } = req.body;
+    const { email, username, password, tipe,nama, no_telp, alamat, created_at, updated_at } = req.body;
 
     if (!email) {
         return res.status(400).send("Email is required");
@@ -31,14 +31,27 @@ const addUsers = (req, res) => {
             res.status(300).send("Email ada");
             console.log("Gagal menambahkan akun");
         }else{
-            pool.query(queries.addUsers, [email, username, password, tipe, created_at, updated_at], (error, results) => {
+            pool.query(queries.addUsers, [email, username, password, tipe, nama, no_telp, alamat, created_at, updated_at], (error, results) => {
                 if(error) throw error;
+
                 res.status(200).send("Register Succesfully");
                 console.log("Berhasil menambahkan akun");
             });
         }
         
     });
+}
+
+const addPerson = (req, res) => {
+    const {id_user} = req.body;
+
+    pool.query(queries.addPerson, [id_user], (error, results) => {
+        if(error) throw error;
+
+        res.status(200).send(results);
+        console.log("Id User berhasil ditambahkan di table person");
+
+    })
 }
 
 const deleteUsers = (req, res) => {
@@ -73,4 +86,5 @@ module.exports = {
     addUsers,
     deleteUsers,
     checkLogin,
+    addPerson,
 };

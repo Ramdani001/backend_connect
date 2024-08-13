@@ -3,7 +3,7 @@ const queries = require("./query");
 
 const getProducts = (req, res) => {
     pool.query(queries.getProducts, (error, results) => {
-        if(error) throw error;
+        if(error) throw error.message;
         res.status(200).json(results);
     });
 };
