@@ -18,7 +18,7 @@ const getUsersById = (req, res) => {
 };
 
 const addUsers = (req, res) => {
-    const { email, password, created_at, updated_at } = req.body;
+    const { email, username, password, tipe, created_at, updated_at } = req.body;
 
     if (!email) {
         return res.status(400).send("Email is required");
@@ -28,11 +28,12 @@ const addUsers = (req, res) => {
     pool.query(queries.checkEmailExists, [email], (error, results) => {
         // res.send(results)
         if(results.length > 0){
-            res.send("Email ada");
+            res.status(300).send("Email ada");
+            console.log("Gagal menambahkan akun");
         }else{
-            pool.query(queries.addUsers, [email, password, created_at, updated_at], (error, results) => {
+            pool.query(queries.addUsers, [email, username, password, tipe, created_at, updated_at], (error, results) => {
                 if(error) throw error;
-                res.status(201).send("Register Succesfully");
+                res.status(200).send("Register Succesfully");
                 console.log("Berhasil menambahkan akun");
             });
         }
@@ -48,7 +49,22 @@ const deleteUsers = (req, res) => {
         if(error) throw error;
         res.status(200).send("Users removed successfully");
     });
+}
 
+const checkLogin = (req, res) => {
+
+    const { email, password } = req.body;
+
+    pool.query(queries.checkEmailExists, [email], (error, results) => {
+        
+        if(results.length > 0){
+            res.status(200).send(results);
+            console.log("Email Ada");
+        }else{
+            res.status(300).send("Email atau password salah!!");
+        }
+        
+    });
 }
 
 module.exports = {
@@ -56,4 +72,5 @@ module.exports = {
     getUsersById,
     addUsers,
     deleteUsers,
+    checkLogin,
 };
