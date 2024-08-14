@@ -1,7 +1,7 @@
 const express = require("express");
 const productRoutes = require('./src/prodcut/routes');
 const usersRoutes = require('./src/users/routes');
-
+const multer = require("multer");
 
 
 const app = express();
@@ -29,6 +29,23 @@ app.use(express.json());
 app.get("/", (req, res) => {
     res.send("Hello Word!");
 });
+
+const storage = multer.diskStorage({
+    destination: function(req, file, cb){
+        return cb(null, "../Connect-App/public/images/products");
+    },
+    filename: function(req, file, cb){
+        return cb(null, `${Date.now()}_${file.originalname}`);
+    }
+});
+
+const upload = multer({storage});
+
+app.post('/upload',upload.single('file'), (req, res) => {
+    console.log(req.body);
+    console.log("Tengah");
+    console.log(req.file);
+}); 
 
 app.use('/api/v1/products', productRoutes);
 app.use('/api/v1/users', usersRoutes);
